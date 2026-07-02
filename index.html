@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>المرصاد | منصة كشف الاحتيال</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand">
+      <div class="mark">م</div>
+      <div>
+        <h1>المرصاد</h1>
+        <p>كشف الاحتيال والامتثال</p>
+      </div>
+    </div>
+
+    <nav>
+      <button data-page="user" class="nav">إرسال معاملة</button>
+      <button data-page="admin" class="nav">لوحة الأدمن</button>
+      <button data-page="detail" class="nav">تفاصيل معاملة</button>
+      <button data-page="audit" class="nav">سجل التدقيق</button>
+    </nav>
+
+    <div class="side-note">
+      <span>الصلاحية الحالية</span>
+      <b id="currentRole">زائر</b>
+      <button class="logout" id="logoutBtn">تسجيل الخروج</button>
+    </div>
+  </aside>
+
+  <main>
+    <header class="topbar">
+      <div>
+        <strong id="pageTitle">الدخول</strong>
+        <span id="pageHint">سجل الدخول للمتابعة</span>
+      </div>
+      <div class="live"><i></i> مباشر · <b id="alertCount">0</b> تنبيه</div>
+    </header>
+
+    <section id="login" class="page active">
+      <div class="hero">
+        <div>
+          <h2>منصة المرصاد</h2>
+          <p>سجل الدخول للوصول إلى صلاحياتك. حساب المستخدم يرسل المعاملات، وحساب الأدمن يراجع التنبيهات والتفاصيل وسجل التدقيق.</p>
+        </div>
+
+        <form id="loginForm" class="login-card">
+          <h3>تسجيل الدخول</h3>
+          <label>اسم المستخدم
+            <input name="username" required placeholder="اسم المستخدم">
+          </label>
+          <label>كلمة المرور
+            <input name="password" type="password" required placeholder="كلمة المرور">
+          </label>
+          <button class="primary">دخول</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="user" class="page">
+      <div class="head">
+        <h2>إرسال معاملة جديدة</h2>
+        <p>أدخل بيانات المعاملة. سيحسب المرصاد درجة المخاطر ويرسل النتيجة مباشرة إلى لوحة الأدمن.</p>
+      </div>
+
+      <div class="split">
+        <form id="txForm" class="panel form">
+          <h3>بيانات المعاملة</h3>
+          <div class="fields">
+            <label>رقم الحساب<input name="account" required placeholder="AC-8821"></label>
+            <label>اسم العميل<input name="customer" required placeholder="سارة أحمد"></label>
+            <label>المبلغ<input name="amount" type="number" min="1" required placeholder="12400"></label>
+            <label>العملة<select name="currency"><option>SAR</option><option>USD</option><option>EUR</option></select></label>
+            <label>القناة<select name="channel"><option>تحويل فوري</option><option>بطاقة</option><option>دفع إلكتروني</option><option>سحب نقدي</option></select></label>
+            <label>الدولة<input name="country" required placeholder="السعودية"></label>
+            <label>جهاز جديد؟<select name="newDevice"><option value="no">لا</option><option value="yes">نعم</option></select></label>
+            <label>مستفيد جديد؟<select name="newBeneficiary"><option value="no">لا</option><option value="yes">نعم</option></select></label>
+            <label>وقت غير معتاد؟<select name="oddTime"><option value="no">لا</option><option value="yes">نعم</option></select></label>
+            <label>محاولات فاشلة قبل العملية؟<select name="failedAttempts"><option value="no">لا</option><option value="yes">نعم</option></select></label>
+          </div>
+          <label>ملاحظة<textarea name="note" placeholder="اختياري"></textarea></label>
+          <button class="primary">إرسال للتنبؤ</button>
+        </form>
+
+        <div class="panel result">
+          <h3>نتيجة المستخدم</h3>
+          <div class="score-ring" id="userRing" style="--score:0;--color:#10b981">
+            <b id="userScore">0</b>
+            <span>درجة المخاطر</span>
+          </div>
+          <p id="userMessage">بعد الإرسال ستظهر النتيجة هنا.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="admin" class="page">
+      <div class="head row">
+        <div>
+          <h2>لوحة الأدمن</h2>
+          <p>متابعة كل المعاملات، الحالات العالية الخطورة، وأسباب التنبؤ.</p>
+        </div>
+        <button class="secondary" id="seedData">إضافة بيانات تجريبية</button>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><span>إجمالي</span><b id="statTotal">0</b></div>
+        <div class="stat danger"><span>احتيال مشتبه</span><b id="statHold">0</b></div>
+        <div class="stat warn"><span>مراجعة</span><b id="statReview">0</b></div>
+        <div class="stat ok"><span>مسموح</span><b id="statAllow">0</b></div>
+      </div>
+
+      <div class="panel">
+        <div class="table-head">
+          <h3>المعاملات</h3>
+          <select id="filter">
+            <option value="all">كل الحالات</option>
+            <option value="hold">احتيال مشتبه</option>
+            <option value="review">مراجعة</option>
+            <option value="allow">مسموح</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>الوقت</th><th>المعاملة</th><th>العميل</th><th>المبلغ</th>
+                <th>القناة</th><th>المخاطر</th><th>القرار</th><th></th>
+              </tr>
+            </thead>
+            <tbody id="txRows"></tbody>
+          </table>
+          <div id="emptyState" class="empty">لا توجد معاملات بعد.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="detail" class="page">
+      <div class="head">
+        <h2>تفاصيل المعاملة</h2>
+        <p>عرض تفسير القرار وأبرز إشارات الاحتيال.</p>
+      </div>
+      <div id="detailBox" class="detail-grid"></div>
+    </section>
+
+    <section id="audit" class="page">
+      <div class="head">
+        <h2>سجل التدقيق</h2>
+        <p>كل عملية تنبؤ محفوظة محليًا للمراجعة.</p>
+      </div>
+      <div class="panel table-wrap">
+        <table>
+          <thead><tr><th>الوقت</th><th>الحدث</th><th>التفاصيل</th></tr></thead>
+          <tbody id="auditRows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
